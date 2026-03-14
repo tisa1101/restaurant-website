@@ -31,12 +31,11 @@ app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ── RATE LIMITING ────────────────────────────────────────────
-app.use('/api/', rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 200,
-  message: { error: 'Too many requests. Try again later.' }
-}));
+const PORT = process.env.PORT || 3000;
 
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 // ── ROUTES ───────────────────────────────────────────────────
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin',  adminRoutes);
