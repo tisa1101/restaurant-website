@@ -20,7 +20,7 @@ const menuRoutes  = require('./routes/menu');
 const statsRoutes = require('./routes/stats');
 
 const app  = express();
-const PORT = process.env.PORT || 3000;
+
 
 // ── MIDDLEWARE ───────────────────────────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
