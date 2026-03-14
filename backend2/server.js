@@ -1,6 +1,5 @@
 // ============================================================
 //  YUMMY YUM HOT — Main Server
-//  Uses only pure-JS packages — works on Windows with no errors
 // ============================================================
 
 const express   = require('express');
@@ -11,7 +10,7 @@ const rateLimit = require('express-rate-limit');
 const path      = require('path');
 require('dotenv').config();
 
-// Init DB first
+// Init DB
 require('./config/database');
 
 const orderRoutes = require('./routes/orders');
@@ -19,7 +18,7 @@ const adminRoutes = require('./routes/admin');
 const menuRoutes  = require('./routes/menu');
 const statsRoutes = require('./routes/stats');
 
-const app  = express();
+const app = express();
 
 
 // ── MIDDLEWARE ───────────────────────────────────────────────
@@ -30,38 +29,40 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ── RATE LIMITING ────────────────────────────────────────────
-const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 // ── ROUTES ───────────────────────────────────────────────────
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin',  adminRoutes);
 app.use('/api/menu',   menuRoutes);
 app.use('/api/stats',  statsRoutes);
 
+
 // ── HEALTH CHECK ─────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({
-    status    : 'OK ✅',
+    status    : 'OK',
     restaurant: 'Yummy Yum Hot',
     location  : 'Ghatikia Food Court, Bhubaneswar',
     time      : new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
   });
 });
 
+
 // ── SERVE FRONTEND ───────────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
 
 // ── ERROR HANDLER ────────────────────────────────────────────
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
   res.status(500).json({ error: err.message });
 });
+
+
+// ── SERVER START ─────────────────────────────────────────────
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log('\n🔥 ================================');
