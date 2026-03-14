@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yummy Yum Hot — Asian Fusion | Ghatikia Food Court, Bhubaneswar</title>
+<meta name="description" content="Yummy Yum Hot at Ghatikia Food Court, Bhubaneswar. Korean noodles, Chinese cuisine, veg & non-veg sizzlers, instant snow ice cream. Order on WhatsApp!">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --fire1:#FF4500;--fire2:#FF6B00;--fire3:#FFA500;--gold:#FFD700;
+  --dark:#050208;--dark2:#0C0512;--card:#120820;
+  --surface:rgba(255,255,255,0.04);
+  --border:rgba(255,165,0,0.2);
+  --wa:#25D366;--wa2:#128C7E;
+  --white:#fff;
+  --glow:rgba(255,69,0,0.5);--glow2:rgba(255,215,0,0.3);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--white);overflow-x:hidden;cursor:none}
+::selection{background:var(--fire1);color:#fff}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#050208}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--fire1),var(--gold));border-radius:4px}
+
+/* CURSOR */
+#cur{width:12px;height:12px;border-radius:50%;background:var(--gold);position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:transform 0.1s}
+#cur2{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(255,165,0,0.7);position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+
+/* CANVAS */
+#fire-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* FLOATING FOOD EMOJIS */
+.food-float{position:fixed;pointer-events:none;z-index:1;font-size:1.5rem;animation:floatUp linear infinite;opacity:0}
+@keyframes floatUp{0%{opacity:0;transform:translateY(100vh) rotate(0deg)}10%{opacity:0.6}90%{opacity:0.2}100%{opacity:0;transform:translateY(-20vh) rotate(360deg)}}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:300;height:68px;padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;transition:all 0.4s}
+nav.solid{background:rgba(5,2,8,0.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);box-shadow:0 4px 30px rgba(255,69,0,0.12)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-flame{font-size:1.4rem;animation:flameWiggle 2s ease-in-out infinite}
+@keyframes flameWiggle{0%,100%{transform:rotate(-5deg) scale(1)}50%{transform:rotate(5deg) scale(1.1)}}
+.logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.06em;background:linear-gradient(135deg,var(--gold),var(--fire1));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s;position:relative;padding-bottom:3px}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:50%;width:0;height:1.5px;background:linear-gradient(90deg,var(--fire1),var(--gold));transition:all 0.3s;transform:translateX(-50%)}
+.nav-links a:hover{color:var(--gold)}
+.nav-links a:hover::after{width:100%}
+.nav-wa{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--wa2),var(--wa));color:#fff;border:none;padding:9px 18px;border-radius:50px;font-family:'Outfit',sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;text-decoration:none}
+.nav-wa:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(37,211,102,0.4)}
+.wa-icon{width:16px;height:16px;fill:#fff}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.ham span{display:block;width:22px;height:1.5px;background:rgba(255,255,255,0.8);border-radius:2px;transition:all 0.3s}
+.mob-nav{display:none;position:fixed;top:68px;inset-x:0;background:rgba(5,2,8,0.99);backdrop-filter:blur(20px);padding:2rem;flex-direction:column;gap:1.5rem;z-index:299;border-bottom:1px solid var(--border)}
+.mob-nav.open{display:flex}
+.mob-nav a{color:rgba(255,255,255,0.7);text-decoration:none;font-size:1.1rem;letter-spacing:0.08em;text-transform:uppercase;font-family:'Bebas Neue',sans-serif}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:5rem 2rem 3rem}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(255,69,0,0.2) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(255,215,0,0.08) 0%,transparent 50%),var(--dark)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,165,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,165,0,0.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse at 50% 50%,black 30%,transparent 80%)}
+.hero-vline{position:absolute;left:50%;top:0;width:1px;height:100%;background:linear-gradient(to bottom,transparent,rgba(255,165,0,0.15) 40%,rgba(255,69,0,0.1),transparent)}
+.orb-l{position:absolute;width:700px;height:700px;left:-20%;top:-20%;border-radius:50%;background:radial-gradient(circle,rgba(255,69,0,0.15) 0%,transparent 65%);animation:orbMove 12s ease-in-out infinite alternate}
+.orb-r{position:absolute;width:500px;height:500px;right:-10%;bottom:-10%;border-radius:50%;background:radial-gradient(circle,rgba(255,165,0,0.12) 0%,transparent 65%);animation:orbMove 9s ease-in-out infinite alternate-reverse}
+@keyframes orbMove{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,30px) scale(1.1)}}
+.ring1{position:absolute;width:600px;height:600px;border-radius:50%;border:1px solid rgba(255,165,0,0.06);animation:spin1 35s linear infinite}
+.ring2{position:absolute;width:400px;height:400px;border-radius:50%;border:1px solid rgba(255,69,0,0.08);animation:spin1 22s linear infinite reverse}
+.ring3{position:absolute;width:820px;height:820px;border-radius:50%;border:1px dashed rgba(255,165,0,0.04);animation:spin1 55s linear infinite}
+@keyframes spin1{to{transform:rotate(360deg)}}
+.hero-content{position:relative;z-index:10;max-width:850px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,165,0,0.35);color:var(--fire3);font-size:0.68rem;letter-spacing:0.25em;text-transform:uppercase;padding:6px 18px;border-radius:50px;margin-bottom:2.5rem;background:rgba(255,165,0,0.05);animation:fadeUp 0.7s 0.2s both}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--wa);box-shadow:0 0 8px var(--wa);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero-title{font-family:'Bebas Neue',sans-serif;line-height:0.88;margin-bottom:0.5em;animation:fadeUp 0.8s 0.35s both}
+.hero-title .t1{display:block;font-size:clamp(4rem,10vw,9rem);color:var(--white);letter-spacing:0.04em}
+.hero-title .t2{display:block;font-size:clamp(4rem,10vw,9rem);letter-spacing:0.04em;background:linear-gradient(135deg,var(--fire1) 0%,var(--gold) 40%,var(--fire2) 70%,var(--fire1) 100%);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fireText 4s linear infinite}
+.hero-title .t3{display:block;font-size:clamp(4rem,10vw,9rem);letter-spacing:0.04em;color:var(--white)}
+@keyframes fireText{0%{background-position:0%}100%{background-position:300%}}
+.hero-sub{color:rgba(255,255,255,0.45);font-size:1rem;font-weight:300;line-height:1.75;margin-bottom:3rem;animation:fadeUp 0.8s 0.5s both}
+.hero-sub strong{color:rgba(255,255,255,0.85);font-weight:500}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.8s 0.65s both}
+.btn-fire{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--fire1),var(--fire2));color:#fff;text-decoration:none;padding:15px 36px;font-size:0.82rem;letter-spacing:0.12em;text-transform:uppercase;border-radius:50px;font-weight:600;box-shadow:0 8px 30px var(--glow);transition:transform 0.2s,box-shadow 0.2s;border:none;cursor:pointer}
+.btn-fire:hover{transform:translateY(-3px);box-shadow:0 16px 45px var(--glow)}
+.btn-wa{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--wa2),var(--wa));color:#fff;text-decoration:none;padding:15px 36px;font-size:0.82rem;letter-spacing:0.1em;text-transform:uppercase;border-radius:50px;font-weight:600;box-shadow:0 8px 30px rgba(37,211,102,0.35);transition:transform 0.2s,box-shadow 0.2s}
+.btn-wa:hover{transform:translateY(-3px);box-shadow:0 16px 45px rgba(37,211,102,0.5)}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,0.25);font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;animation:fadeIn 1s 1.6s both}
+.scroll-bar{width:1px;height:36px;overflow:hidden}
+.scroll-bar::after{content:'';display:block;width:1px;height:36px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);animation:scrollDrop 2s ease-in-out infinite}
+@keyframes scrollDrop{0%{transform:translateY(-36px)}100%{transform:translateY(36px)}}
+
+/* TICKER */
+.ticker{background:linear-gradient(90deg,#1A0008,var(--fire1),#1A0008);border-top:1px solid rgba(255,69,0,0.3);border-bottom:1px solid rgba(255,69,0,0.3);padding:10px 0;overflow:hidden;position:relative;z-index:10}
+.ticker-inner{display:flex;width:max-content;animation:tickRoll 30s linear infinite}
+.ticker-item{padding:0 2.5rem;font-family:'Bebas Neue',sans-serif;font-size:0.95rem;letter-spacing:0.2em;color:rgba(255,255,255,0.9);white-space:nowrap;display:flex;align-items:center;gap:1rem}
+.ticker-sep{color:var(--gold);opacity:0.7}
+@keyframes tickRoll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTION BASE */
+section{padding:7rem 2rem;position:relative;z-index:10}
+.inner{max-width:1160px;margin:0 auto}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--fire3);border:1px solid rgba(255,165,0,0.25);padding:5px 14px;border-radius:50px;background:rgba(255,165,0,0.05);margin-bottom:1.2rem}
+.title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);letter-spacing:0.05em;line-height:1;margin-bottom:0.3em}
+.title .fire{background:linear-gradient(135deg,var(--fire1),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.divider{width:60px;height:2px;background:linear-gradient(90deg,var(--fire1),var(--gold));margin:1.5rem 0 3rem;border-radius:2px}
+
+/* ABOUT */
+.about{background:linear-gradient(170deg,var(--dark) 0%,#080312 100%)}
+.about-wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:6rem;align-items:center}
+.about-text p{color:rgba(255,255,255,0.5);line-height:1.9;font-size:0.96rem;font-weight:300;margin-bottom:1rem}
+.about-loc{display:flex;align-items:center;gap:10px;margin-top:1.5rem;padding:1rem 1.25rem;border:1px solid var(--border);border-radius:12px;background:rgba(255,165,0,0.04)}
+.about-loc-pin{font-size:1.5rem}
+.about-loc-text h5{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--fire3);margin-bottom:2px}
+.about-loc-text p{font-size:0.88rem;color:rgba(255,255,255,0.7);margin:0}
+.stat-row{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:2rem}
+.stat{position:relative;padding:1.2rem 1rem 1.2rem 1.4rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);overflow:hidden;transition:border-color 0.3s,transform 0.3s}
+.stat::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--fire1),var(--gold))}
+.stat:hover{border-color:rgba(255,165,0,0.45);transform:translateY(-3px)}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;background:linear-gradient(135deg,var(--fire1),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.stat-l{font-size:0.72rem;color:rgba(255,255,255,0.38);margin-top:3px;letter-spacing:0.05em}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.feat{border:1px solid var(--border);border-radius:12px;padding:1.5rem;background:rgba(255,255,255,0.03);transition:all 0.3s;position:relative;overflow:hidden}
+.feat:first-child{grid-column:span 2;background:linear-gradient(135deg,rgba(255,69,0,0.1),rgba(255,215,0,0.05))}
+.feat::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,69,0,0.06),transparent);opacity:0;transition:opacity 0.3s}
+.feat:hover{border-color:rgba(255,165,0,0.4);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.4)}
+.feat:hover::after{opacity:1}
+.feat-ico{font-size:2rem;margin-bottom:0.75rem}
+.feat h4{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.06em;color:var(--fire3);margin-bottom:0.3rem}
+.feat p{font-size:0.8rem;color:rgba(255,255,255,0.42);line-height:1.7}
+
+/* WHATSAPP ORDER SECTION */
+.wa-section{background:linear-gradient(135deg,#041A0A,#0A2012);border-top:1px solid rgba(37,211,102,0.2);border-bottom:1px solid rgba(37,211,102,0.2);padding:5rem 2rem}
+.wa-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.wa-steps{margin-top:2.5rem;display:flex;flex-direction:column;gap:1.25rem}
+.wa-step{display:flex;align-items:flex-start;gap:1rem;padding:1.25rem;border:1px solid rgba(37,211,102,0.15);border-radius:12px;background:rgba(37,211,102,0.03);transition:border-color 0.3s}
+.wa-step:hover{border-color:rgba(37,211,102,0.35)}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--wa2),var(--wa));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:#fff;flex-shrink:0}
+.step-txt h5{font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.9);margin-bottom:3px}
+.step-txt p{font-size:0.78rem;color:rgba(255,255,255,0.42);line-height:1.6}
+.wa-order-box{border:1px solid rgba(37,211,102,0.25);border-radius:16px;padding:2.5rem;background:linear-gradient(145deg,rgba(37,211,102,0.06),rgba(18,140,126,0.04));text-align:center}
+.wa-order-box .wa-big{font-size:4rem;margin-bottom:1rem;animation:waPulse 3s ease-in-out infinite}
+@keyframes waPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.wa-order-box h3{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.06em;color:var(--wa);margin-bottom:0.5rem}
+.wa-order-box p{color:rgba(255,255,255,0.5);font-size:0.88rem;line-height:1.7;margin-bottom:2rem}
+.wa-order-now{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--wa2),var(--wa));color:#fff;text-decoration:none;padding:16px 40px;font-size:0.9rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border-radius:50px;box-shadow:0 8px 30px rgba(37,211,102,0.4);transition:transform 0.2s,box-shadow 0.2s;font-family:'Outfit',sans-serif}
+.wa-order-now:hover{transform:translateY(-3px);box-shadow:0 16px 45px rgba(37,211,102,0.55)}
+
+/* SPECIALS */
+.specials{background:var(--dark)}
+.spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.spec-card{position:relative;border:1px solid var(--border);border-radius:16px;padding:2rem 1.5rem;background:linear-gradient(145deg,var(--card),#0A0515);overflow:hidden;transition:transform 0.3s,box-shadow 0.3s}
+.spec-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--fire1),var(--gold),var(--fire2))}
+.spec-card:hover{transform:translateY(-8px);box-shadow:0 30px 60px rgba(0,0,0,0.6)}
+.spec-card::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,69,0,0.05),transparent);opacity:0;transition:opacity 0.3s}
+.spec-card:hover::after{opacity:1}
+.spec-badge{display:inline-block;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;padding:4px 12px;border-radius:50px;margin-bottom:1rem;background:linear-gradient(135deg,var(--fire1),var(--fire2));color:#fff;font-weight:600}
+.spec-card h3{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.05em;color:var(--white);margin-bottom:0.4rem}
+.spec-card p{font-size:0.8rem;color:rgba(255,255,255,0.43);line-height:1.7;margin-bottom:1.5rem}
+.spec-price{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;background:linear-gradient(135deg,var(--gold),var(--fire2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:0.03em}
+.spec-emoji{font-size:3rem;margin-bottom:1rem;display:block;animation:bounce 3s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* MENU */
+.menu-sec{background:linear-gradient(170deg,#080312,var(--dark))}
+.menu-tabs{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:3rem}
+.mtab{background:transparent;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.45);padding:10px 22px;font-family:'Outfit',sans-serif;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:50px;transition:all 0.25s;font-weight:500}
+.mtab:hover{border-color:rgba(255,165,0,0.4);color:rgba(255,255,255,0.85)}
+.mtab.on{background:linear-gradient(135deg,var(--fire1),var(--fire2));border-color:transparent;color:#fff;box-shadow:0 6px 22px var(--glow)}
+.msec{display:none}
+.msec.on{display:block}
+.mfeat{border:1px solid var(--border);border-radius:12px;padding:2.5rem;margin-bottom:3rem;background:linear-gradient(135deg,var(--card),#070215);display:flex;align-items:center;gap:2.5rem;position:relative;overflow:hidden}
+.mfeat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--fire1),var(--gold),var(--wa),var(--fire1));background-size:200%;animation:borderRun 3s linear infinite}
+@keyframes borderRun{0%{background-position:0%}100%{background-position:200%}}
+.mfeat-ico{font-size:4rem;flex-shrink:0}
+.mfeat h4{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.04em;background:linear-gradient(135deg,var(--fire3),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.4rem}
+.mfeat p{color:rgba(255,255,255,0.48);font-size:0.88rem;line-height:1.7}
+.mcat{margin-bottom:3.5rem}
+.mcat h3{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.06em;color:var(--white);border-bottom:1px solid var(--border);padding-bottom:0.8rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem}
+.ctag{font-family:'Outfit',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;background:rgba(255,165,0,0.1);color:var(--fire3);border:1px solid rgba(255,165,0,0.2);padding:3px 10px;border-radius:50px}
+.mitems{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:0.6rem}
+.mi{display:flex;justify-content:space-between;align-items:center;padding:0.85rem 1.1rem;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.055);border-radius:8px;transition:all 0.2s;cursor:pointer}
+.mi:hover{background:rgba(255,165,0,0.07);border-color:rgba(255,165,0,0.28);transform:translateX(5px)}
+.mi-n{font-size:0.875rem;color:rgba(255,255,255,0.76)}
+.mi-p{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;background:linear-gradient(135deg,var(--gold),var(--fire2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;margin-left:1rem;flex-shrink:0}
+.mi:hover .add-btn{opacity:1}
+.add-btn{opacity:0;background:linear-gradient(135deg,var(--wa2),var(--wa));color:#fff;border:none;padding:4px 10px;border-radius:50px;font-size:0.65rem;font-weight:600;letter-spacing:0.08em;cursor:pointer;transition:opacity 0.2s,transform 0.1s;font-family:'Outfit',sans-serif;flex-shrink:0;margin-left:6px}
+.add-btn:hover{transform:scale(1.05)}
+.ice-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.8rem}
+.ice{border:1px solid var(--border);border-radius:12px;padding:1.25rem 0.75rem;text-align:center;background:var(--card);transition:all 0.25s;cursor:pointer}
+.ice:hover{transform:translateY(-6px) rotate(2deg);box-shadow:0 20px 35px rgba(0,0,0,0.5);border-color:rgba(255,165,0,0.45)}
+.ice .ico{font-size:1.8rem;margin-bottom:6px}
+.ice .fl{font-size:0.78rem;color:rgba(255,255,255,0.72);margin-bottom:4px}
+.ice .pr{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;background:linear-gradient(135deg,var(--gold),var(--fire2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* REVIEWS */
+.reviews{background:linear-gradient(135deg,#060110,var(--dark));border-top:1px solid var(--border)}
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.rev{border:1px solid var(--border);border-radius:12px;padding:1.75rem;background:var(--surface);transition:all 0.3s;position:relative;overflow:hidden}
+.rev::before{content:'"';position:absolute;top:-10px;left:10px;font-size:5rem;color:rgba(255,165,0,0.06);font-family:serif;line-height:1}
+.rev:hover{transform:translateY(-4px);border-color:rgba(255,165,0,0.38)}
+.rev-stars{color:var(--gold);font-size:0.85rem;letter-spacing:0.1em;margin-bottom:1rem}
+.rev p{font-size:0.87rem;color:rgba(255,255,255,0.57);line-height:1.8;margin-bottom:1.2rem;font-style:italic}
+.rev-auth{display:flex;align-items:center;gap:10px}
+.av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0}
+.av1{background:linear-gradient(135deg,var(--fire1),var(--fire2))}
+.av2{background:linear-gradient(135deg,#2E86AB,#54C6EB)}
+.av3{background:linear-gradient(135deg,#7B2FBE,#C77DFF)}
+.rev-name{font-size:0.82rem;font-weight:600;color:var(--white)}
+.rev-loc{font-size:0.7rem;color:rgba(255,255,255,0.35)}
+
+/* LOCATION */
+.location{background:var(--dark);padding:5rem 2rem}
+.loc-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.loc-map-box{border:1px solid var(--border);border-radius:16px;overflow:hidden;aspect-ratio:4/3;background:linear-gradient(145deg,#0D0520,#050210);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;text-align:center;padding:2rem;position:relative}
+.loc-map-box::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,69,0,0.08),transparent 70%)}
+.loc-pin-big{font-size:4rem;animation:pinBounce 2s ease-in-out infinite}
+@keyframes pinBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.loc-map-box h3{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.06em;background:linear-gradient(135deg,var(--fire1),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.loc-map-box p{color:rgba(255,255,255,0.5);font-size:0.85rem;line-height:1.7}
+.loc-map-link{display:inline-flex;align-items:center;gap:8px;margin-top:1rem;border:1px solid rgba(255,165,0,0.35);color:var(--fire3);padding:10px 24px;border-radius:50px;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;transition:all 0.2s}
+.loc-map-link:hover{background:rgba(255,165,0,0.08);border-color:var(--gold)}
+.loc-info h3{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:0.04em;margin-bottom:0.5rem}
+.loc-info h3 .fire{background:linear-gradient(135deg,var(--fire1),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.loc-details{margin-top:2rem;display:flex;flex-direction:column;gap:1.2rem}
+.loc-row{display:flex;align-items:flex-start;gap:1rem;padding:1rem 1.25rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);transition:border-color 0.3s}
+.loc-row:hover{border-color:rgba(255,165,0,0.38)}
+.loc-ico{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(255,69,0,0.2),rgba(255,215,0,0.1));border:1px solid var(--border);font-size:1rem;flex-shrink:0}
+.loc-row h5{font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--fire3);margin-bottom:3px}
+.loc-row p{color:rgba(255,255,255,0.65);font-size:0.88rem;margin:0}
+
+/* FLOATING CART */
+.float-cart{position:fixed;bottom:2rem;right:2rem;z-index:400}
+.cart-wa{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--wa2),var(--wa));color:#fff;text-decoration:none;padding:14px 22px;border-radius:50px;font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;box-shadow:0 8px 30px rgba(37,211,102,0.5);animation:cartPulse 3s ease-in-out infinite;font-family:'Outfit',sans-serif}
+@keyframes cartPulse{0%,100%{box-shadow:0 8px 30px rgba(37,211,102,0.5)}50%{box-shadow:0 12px 45px rgba(37,211,102,0.75)}}
+.cart-wa:hover{transform:scale(1.05);animation:none;box-shadow:0 16px 50px rgba(37,211,102,0.65)}
+
+/* FOOTER */
+footer{background:#020106;border-top:1px solid var(--border);padding:4rem 2rem 2rem;position:relative;overflow:hidden}
+footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:300px;height:1px;background:linear-gradient(90deg,transparent,var(--fire1),var(--gold),var(--fire1),transparent)}
+.foot-inner{max-width:1160px;margin:0 auto}
+.foot-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4rem;margin-bottom:3rem}
+.foot-brand .logo-text{font-size:2rem}
+.foot-brand p{color:rgba(255,255,255,0.35);font-size:0.82rem;line-height:1.8;margin-top:0.75rem;max-width:280px}
+.foot-brand .wa-pill{display:inline-flex;align-items:center;gap:7px;margin-top:1.5rem;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.25);color:var(--wa);padding:8px 18px;border-radius:50px;font-size:0.75rem;font-weight:600;text-decoration:none;transition:all 0.2s}
+.foot-brand .wa-pill:hover{background:rgba(37,211,102,0.18)}
+.foot-col h5{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.15em;color:var(--fire3);margin-bottom:1rem}
+.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:0.6rem}
+.foot-col ul a{color:rgba(255,255,255,0.38);text-decoration:none;font-size:0.82rem;transition:color 0.2s}
+.foot-col ul a:hover{color:var(--gold)}
+.foot-bottom{border-top:1px solid rgba(255,255,255,0.06);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.foot-bottom p{color:rgba(255,255,255,0.2);font-size:0.75rem}
+.foot-bottom .heart{color:var(--fire1)}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(45px);transition:opacity 0.75s ease,transform 0.75s ease}
+.rv.in{opacity:1;transform:translateY(0)}
+.rvl{opacity:0;transform:translateX(-45px);transition:opacity 0.75s ease,transform 0.75s ease}
+.rvl.in{opacity:1;transform:translateX(0)}
+.rvr{opacity:0;transform:translateX(45px);transition:opacity 0.75s ease,transform 0.75s ease}
+.rvr.in{opacity:1;transform:translateX(0)}
+.rv.d1{transition-delay:0.1s}.rv.d2{transition-delay:0.2s}.rv.d3{transition-delay:0.3s}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* TOAST */
+.toast{position:fixed;bottom:7rem;right:2rem;z-index:500;background:linear-gradient(135deg,var(--wa2),var(--wa));color:#fff;padding:12px 20px;border-radius:50px;font-size:0.8rem;font-weight:600;box-shadow:0 8px 25px rgba(37,211,102,0.4);transform:translateY(20px);opacity:0;transition:all 0.3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:960px){
+  .nav-links,.nav-wa{display:none}
+  .ham{display:flex}
+  .about-wrap,.wa-inner,.loc-inner,.foot-top{grid-template-columns:1fr;gap:2.5rem}
+  .spec-grid,.rev-grid{grid-template-columns:1fr}
+  .mfeat{flex-direction:column;text-align:center}
+  .feature-grid,.stat-row{grid-template-columns:1fr}
+  .feat:first-child{grid-column:span 1}
+  .hero-title .t1,.hero-title .t2,.hero-title .t3{font-size:clamp(3rem,12vw,5rem)}
+  #cur,#cur2,.food-float{display:none}
+  .foot-bottom{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<canvas id="fire-canvas"></canvas>
+<div id="cur"></div>
+<div id="cur2"></div>
+<div class="toast" id="toast"></div>
+
+<!-- FLOATING FOOD EMOJIS - injected by JS -->
+
+<!-- FLOATING WA BUTTON -->
+<div class="float-cart">
+  <a href="https://wa.me/919999999999?text=Hi!%20I%20want%20to%20place%20an%20order%20from%20Yummy%20Yum%20Hot%20%F0%9F%94%A5" target="_blank" class="cart-wa">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Order on WhatsApp
+  </a>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">
+    <span class="logo-flame">🔥</span>
+    <span class="logo-text">Yummy Yum Hot</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#order">Order</a></li>
+    <li><a href="#specials">Specials</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#location">Find Us</a></li>
+  </ul>
+  <a href="https://wa.me/919999999999?text=Hi!%20I%20want%20to%20place%20an%20order!" target="_blank" class="nav-wa">
+    <svg class="wa-icon" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Order Now
+  </a>
+  <button class="ham" onclick="toggleMob()"><span></span><span></span><span></span></button>
+</nav>
+<div class="mob-nav" id="mobNav">
+  <a href="#about" onclick="toggleMob()">About</a>
+  <a href="#order" onclick="toggleMob()">How to Order</a>
+  <a href="#specials" onclick="toggleMob()">Specials</a>
+  <a href="#menu" onclick="toggleMob()">Menu</a>
+  <a href="#location" onclick="toggleMob()">Find Us</a>
+  <a href="https://wa.me/919999999999?text=Hi!%20I%20want%20to%20order!" target="_blank" style="color:var(--wa)">📲 Order on WhatsApp</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-vline"></div>
+  <div class="orb-l"></div><div class="orb-r"></div>
+  <div class="ring1"></div><div class="ring2"></div><div class="ring3"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="badge-dot"></span> Now open · Ghatikia Food Court · Bhubaneswar</div>
+    <h1 class="hero-title">
+      <span class="t1">YUMMY</span>
+      <span class="t2">YUM</span>
+      <span class="t3">HOT🔥</span>
+    </h1>
+    <p class="hero-sub">
+      <strong>Korean · Chinese · Asian Fusion</strong><br>
+      Bold noodles, sizzling grills, rich soups & magical snow ice cream<br>right at Ghatikia Food Court, Bhubaneswar
+    </p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-fire">🍜 Explore Menu</a>
+      <a href="https://wa.me/919999999999?text=Hi!%20I%20want%20to%20order%20from%20Yummy%20Yum%20Hot!%20%F0%9F%94%A5" target="_blank" class="btn-wa">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Order on WhatsApp
+      </a>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-bar"></div><span>Scroll</span></div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item">Korean Noodles<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Instant Snow Ice Cream<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Veg &amp; Non-Veg<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Chicken Sizzler ₹220<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Dragon Paneer<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Ghatikia Food Court<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">WhatsApp Orders<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Prawn Golden Fry<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Korean Noodles<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Instant Snow Ice Cream<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Veg &amp; Non-Veg<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Chicken Sizzler ₹220<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Dragon Paneer<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Ghatikia Food Court<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">WhatsApp Orders<span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Prawn Golden Fry<span class="ticker-sep">✦</span></span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="inner">
+    <div class="about-wrap">
+      <div class="rvl">
+        <span class="tag">🔥 Our Story</span>
+        <h2 class="title">BOLD FLAVOURS<br><span class="fire">BHUBANESWAR</span></h2>
+        <div class="divider"></div>
+        <p>Yummy Yum Hot brings the fire of Asian street food right to the heart of Bhubaneswar. Find us at Ghatikia Food Court — your go-to spot for Korean noodles, Chinese classics, sizzling grills and unforgettable snow ice cream.</p>
+        <p>Every dish is made fresh to order, packed with bold spices and authentic flavours. Whether you're vegetarian or non-veg, there's something on our menu that will keep you coming back.</p>
+        <div class="about-loc">
+          <span class="about-loc-pin">📍</span>
+          <div class="about-loc-text">
+            <h5>Where to Find Us</h5>
+            <p>Ghatikia Food Court, Ghatikia, Bhubaneswar, Odisha</p>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat rv d1"><div class="stat-n">80+</div><div class="stat-l">Menu Items</div></div>
+          <div class="stat rv d2"><div class="stat-n">₹10</div><div class="stat-l">Starting Price</div></div>
+          <div class="stat rv d3"><div class="stat-n">11</div><div class="stat-l">Ice Cream Flavours</div></div>
+          <div class="stat rv"><div class="stat-n">2-in-1</div><div class="stat-l">Veg &amp; Non-Veg</div></div>
+        </div>
+      </div>
+      <div class="feature-grid rvr">
+        <div class="feat"><div class="feat-ico">🌶️</div><h4>Bold &amp; Authentic</h4><p>Freshly made every day with authentic spice blends and hand-picked ingredients — no shortcuts, ever.</p></div>
+        <div class="feat"><div class="feat-ico">🍜</div><h4>Korean Noodles</h4><p>Rameen, Kimchi, Hot &amp; Spicy — Seoul-inspired bowls with a Bhubaneswar twist.</p></div>
+        <div class="feat"><div class="feat-ico">🍦</div><h4>Snow Ice Cream</h4><p>Prepared right before your eyes — 11 magical flavours of our signature instant snow ice cream.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHATSAPP ORDER -->
+<section class="wa-section" id="order">
+  <div class="wa-inner">
+    <div class="rvl">
+      <span class="tag">📲 Super Easy</span>
+      <h2 class="title" style="color:#fff">ORDER VIA<br><span style="background:linear-gradient(135deg,var(--wa),#A8FF78);-webkit-background-clip:text;-webkit-text-fill-color:transparent">WHATSAPP</span></h2>
+      <div class="divider" style="background:linear-gradient(90deg,var(--wa),#A8FF78)"></div>
+      <p style="color:rgba(255,255,255,0.5);font-size:0.95rem;line-height:1.8;margin-bottom:0.5rem">Skip the queue! Browse our menu, pick your favourites, and send us a WhatsApp message. We'll confirm your order and have it ready for pickup or delivery.</p>
+      <div class="wa-steps">
+        <div class="wa-step rv d1"><div class="step-num">1</div><div class="step-txt"><h5>Browse the Menu</h5><p>Scroll through our full menu below and note what you'd like to order.</p></div></div>
+        <div class="wa-step rv d2"><div class="step-num">2</div><div class="step-txt"><h5>Tap any "Add to Order" button</h5><p>Click any dish — it auto-fills a WhatsApp message with your item ready to send.</p></div></div>
+        <div class="wa-step rv d3"><div class="step-num">3</div><div class="step-txt"><h5>Confirm &amp; Collect</h5><p>We confirm your order and let you know when it's ready at Ghatikia Food Court!</p></div></div>
+      </div>
+    </div>
+    <div class="wa-order-box rvr">
+      <div class="wa-big">📲</div>
+      <h3>ORDER NOW ON WHATSAPP</h3>
+      <p>Tap the button below to open WhatsApp and start your order. We're available daily 11AM – 10:30PM. Quick replies guaranteed!</p>
+      <a href="https://wa.me/919999999999?text=Hi!%20I'd%20like%20to%20order%20from%20Yummy%20Yum%20Hot%20at%20Ghatikia%20Food%20Court%20%F0%9F%94%A5%0A%0AMy%20Order%3A%0A" target="_blank" class="wa-order-now">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Start My Order
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SPECIALS -->
+<section class="specials" id="specials">
+  <div class="inner">
+    <span class="tag rv">⭐ Chef Picks</span>
+    <h2 class="title rv">MUST-TRY <span class="fire">DISHES</span></h2>
+    <div class="spec-grid">
+      <div class="spec-card rv d1"><span class="spec-badge">🔥 Bestseller</span><span class="spec-emoji">🥢</span><h3>Veg Kimchi Noodles</h3><p>Korean fermented-style noodles tossed in our signature house sauce — fiery, tangy, unforgettable.</p><div class="spec-price">₹100/-</div></div>
+      <div class="spec-card rv d2"><span class="spec-badge">⭐ Fan Favourite</span><span class="spec-emoji">🍗</span><h3>Chicken Sizzler</h3><p>The drama of a sizzling iron plate, the flavour of perfectly spiced chicken — a showstopper.</p><div class="spec-price">₹220/-</div></div>
+      <div class="spec-card rv d3"><span class="spec-badge">✨ Signature</span><span class="spec-emoji">🍦</span><h3>Snow Ice Cream</h3><p>Made right before your eyes — impossibly fluffy, in 11 incredible flavours. A must try!</p><div class="spec-price">₹40 onwards</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="menu-sec" id="menu">
+  <div class="inner">
+    <span class="tag rv">🍽️ Full Menu</span>
+    <h2 class="title rv">EVERYTHING WE <span class="fire">SERVE</span></h2>
+    <div class="divider rv"></div>
+    <div class="menu-tabs rv">
+      <button class="mtab on" onclick="switchTab('veg',this)">🌿 Vegetarian</button>
+      <button class="mtab" onclick="switchTab('nv',this)">🍗 Non-Veg</button>
+      <button class="mtab" onclick="switchTab('ice',this)">🍦 Desserts</button>
+    </div>
+
+    <!-- VEG -->
+    <div class="msec on" id="veg">
+      <div class="mfeat"><div class="mfeat-ico">🌿</div><div><h4>Pure Vegetarian</h4><p>Crispy mushroom starters, sizzling paneer, Korean noodles, comforting soups and fresh rotis — all bold, never boring.</p></div></div>
+      <div class="mcat"><h3>Starters <span class="ctag">Veg</span></h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Chatpata Mushroom</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹120</span><button class="add-btn" onclick="orderItem('Chatpata Mushroom ₹120')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Mayo Mushroom</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹120</span><button class="add-btn" onclick="orderItem('Mayo Mushroom ₹120')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Mushroom Crispy Fry</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹130</span><button class="add-btn" onclick="orderItem('Mushroom Crispy Fry ₹130')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Gobi Chilli</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹80</span><button class="add-btn" onclick="orderItem('Gobi Chilli ₹80')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Paneer Crispy Fry</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹130</span><button class="add-btn" onclick="orderItem('Paneer Crispy Fry ₹130')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Mint Paneer</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹120</span><button class="add-btn" onclick="orderItem('Mint Paneer ₹120')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Dragon Paneer</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹130</span><button class="add-btn" onclick="orderItem('Dragon Paneer ₹130')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Veg Tadaka</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹80</span><button class="add-btn" onclick="orderItem('Veg Tadaka ₹80')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Veg Sizzler</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹220</span><button class="add-btn" onclick="orderItem('Veg Sizzler ₹220')">+ Order</button></span></div>
+      </div></div>
+      <div class="mcat"><h3>Chopsy <span class="ctag">Veg</span></h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Veg Chopsy</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹130</span><button class="add-btn" onclick="orderItem('Veg Chopsy ₹130')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">American Veg Chopsy</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹150</span><button class="add-btn" onclick="orderItem('American Veg Chopsy ₹150')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Veg Spring Roll</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">Ask us</span><button class="add-btn" onclick="orderItem('Veg Spring Roll')">+ Order</button></span></div>
+      </div></div>
+      <div class="mcat"><h3>Korean Noodles <span class="ctag">Veg</span></h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Veg Roll</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹70</span><button class="add-btn" onclick="orderItem('Veg Roll ₹70')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Veg Noodles</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹80</span><button class="add-btn" onclick="orderItem('Veg Noodles ₹80')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Veg Rameen Noodles</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹100</span><button class="add-btn" onclick="orderItem('Veg Rameen Noodles ₹100')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Veg Hot &amp; Spicy Noodles</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹100</span><button class="add-btn" onclick="orderItem('Veg Hot & Spicy Noodles ₹100')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Veg Kimchi Noodles</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹100</span><button class="add-btn" onclick="orderItem('Veg Kimchi Noodles ₹100')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Veg Pasta</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹120</span><button class="add-btn" onclick="orderItem('Veg Pasta ₹120')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Veg Fried Rice</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹110</span><button class="add-btn" onclick="orderItem('Veg Fried Rice ₹110')">+ Order</button></span></div>
+      </div></div>
+      <div class="mcat"><h3>Soups <span class="ctag">Veg</span></h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Manchow Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹50</span><button class="add-btn" onclick="orderItem('Manchow Soup ₹50')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Sweet Corn Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹40</span><button class="add-btn" onclick="orderItem('Sweet Corn Soup ₹40')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Burnt Garlic Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹50</span><button class="add-btn" onclick="orderItem('Burnt Garlic Soup ₹50')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Lemon Coriander Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹50</span><button class="add-btn" onclick="orderItem('Lemon Coriander Soup ₹50')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Mushroom Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹50</span><button class="add-btn" onclick="orderItem('Mushroom Soup ₹50')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Hot &amp; Sour Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹50</span><button class="add-btn" onclick="orderItem('Hot & Sour Soup ₹50')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Veg Clear Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹40</span><button class="add-btn" onclick="orderItem('Veg Clear Soup ₹40')">+ Order</button></span></div>
+      </div></div>
+      <div class="mcat"><h3>Bread <span class="ctag">Veg</span></h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Atta Roti</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹10</span><button class="add-btn" onclick="orderItem('Atta Roti ₹10')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Atta Paratha</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹20</span><button class="add-btn" onclick="orderItem('Atta Paratha ₹20')">+ Order</button></span></div>
+      </div></div>
+    </div>
+
+    <!-- NON-VEG -->
+    <div class="msec" id="nv">
+      <div class="mfeat"><div class="mfeat-ico">🍗</div><div><h4>Non-Veg Specials</h4><p>Succulent chicken, fresh prawns, fish, eggs and more — bold spice profiles, generous portions, unforgettable flavour.</p></div></div>
+      <div class="mcat"><h3>Chicken <span class="ctag">Non-Veg</span></h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Mini Chicken</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹130</span><button class="add-btn" onclick="orderItem('Mini Chicken ₹130')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Taipai Chicken</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹120</span><button class="add-btn" onclick="orderItem('Taipai Chicken ₹120')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Salt &amp; Pepper Chicken</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹100</span><button class="add-btn" onclick="orderItem('Salt & Pepper Chicken ₹100')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Honey Chicken</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹110</span><button class="add-btn" onclick="orderItem('Honey Chicken ₹110')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Kung Paw Chicken</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹120</span><button class="add-btn" onclick="orderItem('Kung Paw Chicken ₹120')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Crispy Chicken</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹110</span><button class="add-btn" onclick="orderItem('Crispy Chicken ₹110')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Chicken Chop</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹70</span><button class="add-btn" onclick="orderItem('Chicken Chop ₹70')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Chicken Finger</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹100</span><button class="add-btn" onclick="orderItem('Chicken Finger ₹100')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Chicken Sizzler</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹220</span><button class="add-btn" onclick="orderItem('Chicken Sizzler ₹220')">+ Order</button></span></div>
+      </div></div>
+      <div class="mcat"><h3>Egg <span class="ctag">Non-Veg</span></h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Egg Chop (1 plate)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹60</span><button class="add-btn" onclick="orderItem('Egg Chop ₹60')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Fried Chicken (1 plate)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹80</span><button class="add-btn" onclick="orderItem('Fried Chicken ₹80')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Egg Pakoda (1 plate)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹80</span><button class="add-btn" onclick="orderItem('Egg Pakoda ₹80')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Egg Chilli (1 plate)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹90</span><button class="add-btn" onclick="orderItem('Egg Chilli ₹90')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Egg Lollipop (1 plate)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹60</span><button class="add-btn" onclick="orderItem('Egg Lollipop ₹60')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Egg Chicken Chop (1 plate)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹80</span><button class="add-btn" onclick="orderItem('Egg Chicken Chop ₹80')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Egg Tadaka</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹100</span><button class="add-btn" onclick="orderItem('Egg Tadaka ₹100')">+ Order</button></span></div>
+      </div></div>
+      <div class="mcat"><h3>Korean Non-Veg <span class="ctag">Hot</span></h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Egg Roll</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹90</span><button class="add-btn" onclick="orderItem('Egg Roll ₹90')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Fried Chicken</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹130</span><button class="add-btn" onclick="orderItem('Fried Chicken ₹130')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Hot &amp; Spicy Chicken</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹130</span><button class="add-btn" onclick="orderItem('Hot & Spicy Chicken ₹130')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Rameen Noodles</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹120</span><button class="add-btn" onclick="orderItem('Rameen Noodles ₹120')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Hot &amp; Spicy Noodles</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹130</span><button class="add-btn" onclick="orderItem('Hot & Spicy Noodles ₹130')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Kimchi Noodles</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹130</span><button class="add-btn" onclick="orderItem('Kimchi Noodles ₹130')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Non-Veg Pasta</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹140</span><button class="add-btn" onclick="orderItem('Non-Veg Pasta ₹140')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Chicken Popcorn</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹130</span><button class="add-btn" onclick="orderItem('Chicken Popcorn ₹130')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Chicken Wings</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹160</span><button class="add-btn" onclick="orderItem('Chicken Wings ₹160')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Fried Shrimp (Prawn)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹160</span><button class="add-btn" onclick="orderItem('Fried Shrimp ₹160')">+ Order</button></span></div>
+      </div></div>
+      <div class="mcat"><h3>Prawn <span class="ctag">Seafood</span></h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Prawn Finger</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹120</span><button class="add-btn" onclick="orderItem('Prawn Finger ₹120')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Prawn Pakoda</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹160</span><button class="add-btn" onclick="orderItem('Prawn Pakoda ₹160')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Garlic Prawn</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹140</span><button class="add-btn" onclick="orderItem('Garlic Prawn ₹140')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Prawn Golden Fry</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹180</span><button class="add-btn" onclick="orderItem('Prawn Golden Fry ₹180')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Prawn Chop (3 pcs)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹80</span><button class="add-btn" onclick="orderItem('Prawn Chop ₹80')">+ Order</button></span></div>
+      </div></div>
+      <div class="mcat"><h3>Fish <span class="ctag">Seafood</span></h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Pomfret Tawa Fry</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">Ask us</span><button class="add-btn" onclick="orderItem('Pomfret Tawa Fry')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Garlic Pomfret</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">Ask us</span><button class="add-btn" onclick="orderItem('Garlic Pomfret')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Hariyali Pomfret</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">Ask us</span><button class="add-btn" onclick="orderItem('Hariyali Pomfret')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Mayo Fish</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">Ask us</span><button class="add-btn" onclick="orderItem('Mayo Fish')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Fish Finger</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">Ask us</span><button class="add-btn" onclick="orderItem('Fish Finger')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Pomfret Masala</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">Ask us</span><button class="add-btn" onclick="orderItem('Pomfret Masala')">+ Order</button></span></div>
+      </div></div>
+      <div class="mcat"><h3>Chopsy &amp; Chops <span class="ctag">Non-Veg</span></h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Non-Veg Chopsy</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹140</span><button class="add-btn" onclick="orderItem('Non-Veg Chopsy ₹140')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">American Non-Veg Chopsy</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹160</span><button class="add-btn" onclick="orderItem('American Non-Veg Chopsy ₹160')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Egg Chop (2 pcs)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹60</span><button class="add-btn" onclick="orderItem('Egg Chop 2pcs ₹60')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Chicken Chop (3 pcs)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹70</span><button class="add-btn" onclick="orderItem('Chicken Chop 3pcs ₹70')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Mutton Chop (4 pcs)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹60</span><button class="add-btn" onclick="orderItem('Mutton Chop 4pcs ₹60')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Prawn Chop (3 pcs)</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹80</span><button class="add-btn" onclick="orderItem('Prawn Chop 3pcs ₹80')">+ Order</button></span></div>
+      </div></div>
+      <div class="mcat"><h3>Non-Veg Soups</h3><div class="mitems">
+        <div class="mi"><span class="mi-n">Chicken Clear Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹80</span><button class="add-btn" onclick="orderItem('Chicken Clear Soup ₹80')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Chicken Lemon Coriander</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹70</span><button class="add-btn" onclick="orderItem('Chicken Lemon Coriander Soup ₹70')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Chicken Burnt Garlic Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹70</span><button class="add-btn" onclick="orderItem('Chicken Burnt Garlic Soup ₹70')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Chicken Manchow Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹70</span><button class="add-btn" onclick="orderItem('Chicken Manchow Soup ₹70')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Chicken Yummy Yum Hot Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹70</span><button class="add-btn" onclick="orderItem('Chicken Yummy Yum Hot Soup ₹70')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Chicken Sweet Corn Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹60</span><button class="add-btn" onclick="orderItem('Chicken Sweet Corn Soup ₹60')">+ Order</button></span></div>
+        <div class="mi"><span class="mi-n">Mutton Soup</span><span style="display:flex;align-items:center;gap:6px"><span class="mi-p">₹70</span><button class="add-btn" onclick="orderItem('Mutton Soup ₹70')">+ Order</button></span></div>
+      </div></div>
+    </div>
+
+    <!-- ICE CREAM -->
+    <div class="msec" id="ice">
+      <div class="mfeat"><div class="mfeat-ico">🍦</div><div><h4>Instant Snow Ice Cream</h4><p>Watch it made right before your eyes — impossibly light, impossibly fluffy, available in 11 incredible flavours.</p></div></div>
+      <div class="mcat"><h3>Snow Ice Cream <span class="ctag">₹40 onwards</span></h3>
+        <div class="ice-grid">
+          <div class="ice" onclick="orderItem('Mango Snow Ice Cream ₹40')"><div class="ico">🥭</div><div class="fl">Mango</div><div class="pr">₹40</div></div>
+          <div class="ice" onclick="orderItem('Orange Snow Ice Cream ₹40')"><div class="ico">🍊</div><div class="fl">Orange</div><div class="pr">₹40</div></div>
+          <div class="ice" onclick="orderItem('Pineapple Snow Ice Cream ₹40')"><div class="ico">🍍</div><div class="fl">Pineapple</div><div class="pr">₹40</div></div>
+          <div class="ice" onclick="orderItem('Strawberry Snow Ice Cream ₹40')"><div class="ico">🍓</div><div class="fl">Strawberry</div><div class="pr">₹40</div></div>
+          <div class="ice" onclick="orderItem('Lichi Snow Ice Cream ₹40')"><div class="ico">🍈</div><div class="fl">Lichi</div><div class="pr">₹40</div></div>
+          <div class="ice" onclick="orderItem('Mix Snow Ice Cream ₹60')"><div class="ico">🌈</div><div class="fl">Mix</div><div class="pr">₹60</div></div>
+          <div class="ice" onclick="orderItem('Chocolate Snow Ice Cream ₹60')"><div class="ico">🍫</div><div class="fl">Chocolate</div><div class="pr">₹60</div></div>
+          <div class="ice" onclick="orderItem('Butter Scotch Snow Ice Cream ₹60')"><div class="ico">🍯</div><div class="fl">Butter Scotch</div><div class="pr">₹60</div></div>
+          <div class="ice" onclick="orderItem('Vanilla Snow Ice Cream ₹50')"><div class="ico">🤍</div><div class="fl">Vanilla</div><div class="pr">₹50</div></div>
+          <div class="ice" onclick="orderItem('Pista Snow Ice Cream ₹50')"><div class="ico">💚</div><div class="fl">Pista</div><div class="pr">₹50</div></div>
+          <div class="ice" onclick="orderItem('Cold Soup')"><div class="ico">🥛</div><div class="fl">Cold Soup</div><div class="pr">Ask us</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews" id="reviews">
+  <div class="inner">
+    <span class="tag rv">💬 Customers</span>
+    <h2 class="title rv">WHAT PEOPLE <span class="fire">SAY</span></h2>
+    <div class="rev-grid">
+      <div class="rev rv d1"><div class="rev-stars">★★★★★</div><p>"Yummy Yum Hot is the best spot at Ghatikia Food Court! The Kimchi Noodles blew my mind and the Snow Ice Cream is absolutely magical. Will keep coming back!"</p><div class="rev-auth"><div class="av av1">SR</div><div><div class="rev-name">Swaraj Rath</div><div class="rev-loc">Bhubaneswar, Odisha</div></div></div></div>
+      <div class="rev rv d2"><div class="rev-stars">★★★★★</div><p>"Dragon Paneer + Burnt Garlic Soup is my go-to combo every week. Fresh, spicy, generous portions and great prices. Highly recommended in Ghatikia!"</p><div class="rev-auth"><div class="av av2">PM</div><div><div class="rev-name">Priyanka Mishra</div><div class="rev-loc">Bhubaneswar, Odisha</div></div></div></div>
+      <div class="rev rv d3"><div class="rev-stars">★★★★★</div><p>"Ordered Chicken Sizzler via WhatsApp — it arrived sizzling hot and tasted amazing. The WhatsApp ordering system is so convenient. Love this place!"</p><div class="rev-auth"><div class="av av3">AK</div><div><div class="rev-name">Abhishek Kumar</div><div class="rev-loc">Bhubaneswar, Odisha</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section class="location" id="location">
+  <div class="loc-inner">
+    <div class="loc-map-box rv">
+      <span class="loc-pin-big">📍</span>
+      <h3>GHATIKIA FOOD COURT</h3>
+      <p>Ghatikia, Bhubaneswar, Odisha<br>Open Daily: 11 AM – 10:30 PM</p>
+      <a href="https://maps.google.com/?q=Ghatikia+Food+Court+Bhubaneswar" target="_blank" class="loc-map-link">🗺️ Open in Google Maps</a>
+    </div>
+    <div class="loc-info rv">
+      <span class="tag">📍 Find Us</span>
+      <h3 class="title">VISIT <span class="fire">YUMMY YUM HOT</span></h3>
+      <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;line-height:1.8;margin-bottom:0.5rem">We're right inside Ghatikia Food Court — easy to find, easy to love. Walk in any time or place your order on WhatsApp before you arrive.</p>
+      <div class="loc-details">
+        <div class="loc-row"><div class="loc-ico">📍</div><div><h5>Address</h5><p>Ghatikia Food Court, Ghatikia, Bhubaneswar, Odisha – 751003</p></div></div>
+        <div class="loc-row"><div class="loc-ico">🕐</div><div><h5>Hours</h5><p>Daily · 11:00 AM – 10:30 PM</p></div></div>
+        <div class="loc-row"><div class="loc-ico">📲</div><div><h5>WhatsApp Orders</h5><p>Message us anytime — quick replies guaranteed!</p></div></div>
+        <div class="loc-row"><div class="loc-ico">🍽️</div><div><h5>Cuisine</h5><p>Korean · Chinese · Asian Fusion · Veg &amp; Non-Veg</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.8rem">🔥</span><span class="logo-text">Yummy Yum Hot</span></div>
+        <p>Bold Asian flavours at Ghatikia Food Court, Bhubaneswar. Korean noodles, Chinese classics, sizzling grills and magical snow ice cream — crafted fresh, every day.</p>
+        <a href="https://wa.me/919999999999?text=Hi!%20I%20want%20to%20order!" target="_blank" class="wa-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Order on WhatsApp
+        </a>
+      </div>
+      <div class="foot-col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#order">How to Order</a></li>
+          <li><a href="#specials">Chef's Specials</a></li>
+          <li><a href="#menu">Full Menu</a></li>
+          <li><a href="#location">Find Us</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Menu</h5>
+        <ul>
+          <li><a href="#menu">Vegetarian</a></li>
+          <li><a href="#menu">Non-Vegetarian</a></li>
+          <li><a href="#menu">Korean Noodles</a></li>
+          <li><a href="#menu">Soups</a></li>
+          <li><a href="#menu">Snow Ice Cream</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <p>© 2026 Yummy Yum Hot · Ghatikia Food Court, Bhubaneswar, Odisha</p>
+      <p>Made with <span class="heart">🔥</span> in Bhubaneswar</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── REPLACE THIS WITH REAL NUMBER ──
+const OWNER_WA = '919583897199';
+
+// CUSTOM CURSOR
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*0.1;ry+=(my-ry)*0.1;cur2.style.left=rx+'px';cur2.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,.mi,.ice,.spec-card,.feat,.rev,.stat').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur2.style.width='56px';cur2.style.height='56px';cur2.style.borderColor='rgba(255,165,0,1)';cur.style.transform='translate(-50%,-50%) scale(1.8)'});
+  el.addEventListener('mouseleave',()=>{cur2.style.width='40px';cur2.style.height='40px';cur2.style.borderColor='rgba(255,165,0,0.7)';cur.style.transform='translate(-50%,-50%) scale(1)'});
+});
+
+// NAV SCROLL
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>40));
+
+// SCROLL REVEAL
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target)}})},{threshold:0.1});
+document.querySelectorAll('.rv,.rvl,.rvr').forEach(el=>obs.observe(el));
+
+// MENU TABS
+function switchTab(id,btn){
+  document.querySelectorAll('.msec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.mtab').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+
+// MOBILE NAV
+function toggleMob(){document.getElementById('mobNav').classList.toggle('open')}
+
+// WHATSAPP ORDER
+function orderItem(item){
+  const msg=encodeURIComponent(`Hi! I'd like to order from Yummy Yum Hot 🔥\n\nItem: ${item}\n\nLocation: Ghatikia Food Court, Bhubaneswar`);
+  window.open(`https://wa.me/${OWNER_WA}?text=${msg}`,'_blank');
+  showToast(`Opening WhatsApp for ${item}`);
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent='📲 '+msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// FLOATING FOOD EMOJIS
+const foods=['🍜','🍗','🥢','🍦','🔥','🌶️','🍲','🥡','🍱','🦐'];
+foods.forEach((f,i)=>{
+  const el=document.createElement('div');
+  el.className='food-float';
+  el.textContent=f;
+  el.style.left=Math.random()*100+'vw';
+  el.style.animationDuration=(15+Math.random()*20)+'s';
+  el.style.animationDelay=(Math.random()*10)+'s';
+  el.style.fontSize=(1+Math.random())+'rem';
+  document.body.appendChild(el);
+});
+
+// FIRE PARTICLE CANVAS
+const cv=document.getElementById('fire-canvas'),c=cv.getContext('2d');
+let W,H;
+const resize=()=>{W=cv.width=window.innerWidth;H=cv.height=window.innerHeight};
+resize();window.addEventListener('resize',resize);
+class Spark{
+  constructor(){this.reset()}
+  reset(){
+    this.x=Math.random()*W;
+    this.y=H+10;
+    this.vx=(Math.random()-0.5)*0.8;
+    this.vy=-(Math.random()*1.5+0.5);
+    this.life=1;
+    this.decay=Math.random()*0.008+0.003;
+    this.size=Math.random()*2+0.5;
+    const r=Math.random();
+    this.color=r<0.4?'255,69,0':r<0.7?'255,140,0':'255,215,0';
+  }
+  update(){this.x+=this.vx;this.y+=this.vy;this.life-=this.decay;if(this.life<=0||this.y<-10)this.reset()}
+  draw(){c.beginPath();c.arc(this.x,this.y,this.size,0,Math.PI*2);c.fillStyle=`rgba(${this.color},${this.life*0.45})`;c.fill()}
+}
+const sparks=Array.from({length:180},()=>{const s=new Spark();s.y=Math.random()*H;s.life=Math.random();return s});
+(function loop(){c.clearRect(0,0,W,H);sparks.forEach(s=>{s.update();s.draw()});requestAnimationFrame(loop)})();
+</script>
+</body>
+</html>

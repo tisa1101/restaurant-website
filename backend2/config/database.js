@@ -1,0 +1,154 @@
+// ============================================================
+//  DATABASE — Uses lowdb (pure JSON file, no compilation)
+//  Works 100% on Windows, Mac, Linux — no errors ever!
+//  Data is stored in data/db.json
+// ============================================================
+
+const low    = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+const path   = require('path');
+const fs     = require('fs');
+const bcrypt = require('bcryptjs');
+require('dotenv').config();
+
+// Make sure data/ folder exists
+const dataDir = path.join(__dirname, '..', 'data');
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+
+const adapter = new FileSync(path.join(dataDir, 'db.json'));
+const db      = low(adapter);
+
+// ── SET DEFAULTS (runs once on first start) ──────────────────
+const defaultAdminHash = bcrypt.hashSync(
+  process.env.ADMIN_PASSWORD || 'YourStrongPassword@123', 10
+);
+
+db.defaults({
+  orders : [],
+  admins : [
+    {
+      id           : 1,
+      username     : process.env.ADMIN_USERNAME || 'admin',
+      password_hash: defaultAdminHash,
+      role         : 'admin',
+      last_login   : null,
+      created_at   : new Date().toISOString()
+    }
+  ],
+  menu   : getDefaultMenu(),
+  stats  : { total_orders: 0, total_revenue: 0 }
+}).write();
+
+console.log('✅ Database ready at data/db.json');
+console.log(`✅ Admin user: ${process.env.ADMIN_USERNAME || 'admin'}`);
+console.log(`✅ Menu items loaded: ${db.get('menu').value().length}`);
+
+module.exports = db;
+
+// ── DEFAULT FULL MENU ────────────────────────────────────────
+function getDefaultMenu() {
+  return [
+    // VEG STARTERS
+    { id:1,  name:'Chatpata Mushroom',   category:'starters',  sub:'veg',     price:120, label:'₹120', emoji:'🍄', available:true, featured:false },
+    { id:2,  name:'Mayo Mushroom',       category:'starters',  sub:'veg',     price:120, label:'₹120', emoji:'🍄', available:true, featured:false },
+    { id:3,  name:'Mushroom Crispy Fry', category:'starters',  sub:'veg',     price:130, label:'₹130', emoji:'🍄', available:true, featured:false },
+    { id:4,  name:'Gobi Chilli',         category:'starters',  sub:'veg',     price:80,  label:'₹80',  emoji:'🥦', available:true, featured:false },
+    { id:5,  name:'Paneer Crispy Fry',   category:'starters',  sub:'veg',     price:130, label:'₹130', emoji:'🧀', available:true, featured:false },
+    { id:6,  name:'Mint Paneer',         category:'starters',  sub:'veg',     price:120, label:'₹120', emoji:'🧀', available:true, featured:false },
+    { id:7,  name:'Dragon Paneer',       category:'starters',  sub:'veg',     price:130, label:'₹130', emoji:'🐉', available:true, featured:true  },
+    { id:8,  name:'Veg Tadaka',          category:'starters',  sub:'veg',     price:80,  label:'₹80',  emoji:'🌶️', available:true, featured:false },
+    { id:9,  name:'Veg Sizzler',         category:'starters',  sub:'veg',     price:220, label:'₹220', emoji:'🍳', available:true, featured:true  },
+    // CHOPSY
+    { id:10, name:'Veg Chopsy',          category:'chopsy',    sub:'veg',     price:130, label:'₹130', emoji:'🥢', available:true, featured:false },
+    { id:11, name:'American Veg Chopsy', category:'chopsy',    sub:'veg',     price:150, label:'₹150', emoji:'🥢', available:true, featured:false },
+    { id:12, name:'Veg Spring Roll',     category:'chopsy',    sub:'veg',     price:null,label:'Ask',  emoji:'🥢', available:true, featured:false },
+    // KOREAN VEG
+    { id:13, name:'Veg Roll',            category:'korean_veg',sub:'veg',     price:70,  label:'₹70',  emoji:'🥢', available:true, featured:false },
+    { id:14, name:'Veg Noodles',         category:'korean_veg',sub:'veg',     price:80,  label:'₹80',  emoji:'🍜', available:true, featured:false },
+    { id:15, name:'Veg Rameen Noodles',  category:'korean_veg',sub:'veg',     price:100, label:'₹100', emoji:'🍜', available:true, featured:false },
+    { id:16, name:'Veg Hot & Spicy Noodles',category:'korean_veg',sub:'veg', price:100, label:'₹100', emoji:'🌶️', available:true, featured:false },
+    { id:17, name:'Veg Kimchi Noodles',  category:'korean_veg',sub:'veg',     price:100, label:'₹100', emoji:'🥢', available:true, featured:true  },
+    { id:18, name:'Veg Pasta',           category:'korean_veg',sub:'veg',     price:120, label:'₹120', emoji:'🍝', available:true, featured:false },
+    { id:19, name:'Veg Fried Rice',      category:'korean_veg',sub:'veg',     price:110, label:'₹110', emoji:'🍚', available:true, featured:false },
+    // SOUPS VEG
+    { id:20, name:'Manchow Soup',        category:'soups_veg', sub:'veg',     price:50,  label:'₹50',  emoji:'🍵', available:true, featured:false },
+    { id:21, name:'Sweet Corn Soup',     category:'soups_veg', sub:'veg',     price:40,  label:'₹40',  emoji:'🌽', available:true, featured:false },
+    { id:22, name:'Burnt Garlic Soup',   category:'soups_veg', sub:'veg',     price:50,  label:'₹50',  emoji:'🧄', available:true, featured:false },
+    { id:23, name:'Lemon Coriander Soup',category:'soups_veg', sub:'veg',     price:50,  label:'₹50',  emoji:'🍋', available:true, featured:false },
+    { id:24, name:'Mushroom Soup',       category:'soups_veg', sub:'veg',     price:50,  label:'₹50',  emoji:'🍄', available:true, featured:false },
+    { id:25, name:'Hot & Sour Soup',     category:'soups_veg', sub:'veg',     price:50,  label:'₹50',  emoji:'🌶️', available:true, featured:false },
+    { id:26, name:'Veg Clear Soup',      category:'soups_veg', sub:'veg',     price:40,  label:'₹40',  emoji:'🍵', available:true, featured:false },
+    // BREAD
+    { id:27, name:'Atta Roti',           category:'bread',     sub:'veg',     price:10,  label:'₹10',  emoji:'🫓', available:true, featured:false },
+    { id:28, name:'Atta Paratha',        category:'bread',     sub:'veg',     price:20,  label:'₹20',  emoji:'🫓', available:true, featured:false },
+    // CHICKEN
+    { id:29, name:'Mini Chicken',        category:'chicken',   sub:'non-veg', price:130, label:'₹130', emoji:'🍗', available:true, featured:false },
+    { id:30, name:'Taipai Chicken',      category:'chicken',   sub:'non-veg', price:120, label:'₹120', emoji:'🍗', available:true, featured:false },
+    { id:31, name:'Salt & Pepper Chicken',category:'chicken',  sub:'non-veg', price:100, label:'₹100', emoji:'🍗', available:true, featured:false },
+    { id:32, name:'Honey Chicken',       category:'chicken',   sub:'non-veg', price:110, label:'₹110', emoji:'🍯', available:true, featured:false },
+    { id:33, name:'Kung Paw Chicken',    category:'chicken',   sub:'non-veg', price:120, label:'₹120', emoji:'🥜', available:true, featured:false },
+    { id:34, name:'Crispy Chicken',      category:'chicken',   sub:'non-veg', price:110, label:'₹110', emoji:'🍗', available:true, featured:false },
+    { id:35, name:'Chicken Chop',        category:'chicken',   sub:'non-veg', price:70,  label:'₹70',  emoji:'🍗', available:true, featured:false },
+    { id:36, name:'Chicken Finger',      category:'chicken',   sub:'non-veg', price:100, label:'₹100', emoji:'🍗', available:true, featured:false },
+    { id:37, name:'Chicken Sizzler',     category:'chicken',   sub:'non-veg', price:220, label:'₹220', emoji:'🍳', available:true, featured:true  },
+    // EGG
+    { id:38, name:'Egg Chop (1 plate)',     category:'egg',    sub:'non-veg', price:60,  label:'₹60',  emoji:'🥚', available:true, featured:false },
+    { id:39, name:'Fried Chicken (1 plate)',category:'egg',    sub:'non-veg', price:80,  label:'₹80',  emoji:'🍗', available:true, featured:false },
+    { id:40, name:'Egg Pakoda (1 plate)',   category:'egg',    sub:'non-veg', price:80,  label:'₹80',  emoji:'🥚', available:true, featured:false },
+    { id:41, name:'Egg Chilli (1 plate)',   category:'egg',    sub:'non-veg', price:90,  label:'₹90',  emoji:'🌶️', available:true, featured:false },
+    { id:42, name:'Egg Lollipop (1 plate)', category:'egg',   sub:'non-veg', price:60,  label:'₹60',  emoji:'🍡', available:true, featured:false },
+    { id:43, name:'Egg Chicken Chop (1 plate)',category:'egg', sub:'non-veg', price:80,  label:'₹80',  emoji:'🥚', available:true, featured:false },
+    { id:44, name:'Egg Tadaka',             category:'egg',    sub:'non-veg', price:100, label:'₹100', emoji:'🥚', available:true, featured:false },
+    // PRAWN
+    { id:45, name:'Prawn Finger',        category:'prawn',     sub:'non-veg', price:120, label:'₹120', emoji:'🦐', available:true, featured:false },
+    { id:46, name:'Prawn Pakoda',        category:'prawn',     sub:'non-veg', price:160, label:'₹160', emoji:'🦐', available:true, featured:false },
+    { id:47, name:'Garlic Prawn',        category:'prawn',     sub:'non-veg', price:140, label:'₹140', emoji:'🦐', available:true, featured:false },
+    { id:48, name:'Prawn Golden Fry',    category:'prawn',     sub:'non-veg', price:180, label:'₹180', emoji:'🦐', available:true, featured:true  },
+    { id:49, name:'Prawn Chop (3 pcs)',  category:'prawn',     sub:'non-veg', price:80,  label:'₹80',  emoji:'🦐', available:true, featured:false },
+    // FISH
+    { id:50, name:'Pomfret Tawa Fry',    category:'fish',      sub:'non-veg', price:null,label:'Ask',  emoji:'🐟', available:true, featured:false },
+    { id:51, name:'Garlic Pomfret',      category:'fish',      sub:'non-veg', price:null,label:'Ask',  emoji:'🐟', available:true, featured:false },
+    { id:52, name:'Hariyali Pomfret',    category:'fish',      sub:'non-veg', price:null,label:'Ask',  emoji:'🐟', available:true, featured:false },
+    { id:53, name:'Mayo Fish',           category:'fish',      sub:'non-veg', price:null,label:'Ask',  emoji:'🐟', available:true, featured:false },
+    { id:54, name:'Fish Finger',         category:'fish',      sub:'non-veg', price:null,label:'Ask',  emoji:'🐟', available:true, featured:false },
+    { id:55, name:'Pomfret Masala',      category:'fish',      sub:'non-veg', price:null,label:'Ask',  emoji:'🐟', available:true, featured:false },
+    // KOREAN NON-VEG
+    { id:56, name:'Egg Roll',            category:'korean_nv', sub:'non-veg', price:90,  label:'₹90',  emoji:'🥢', available:true, featured:false },
+    { id:57, name:'Fried Chicken',       category:'korean_nv', sub:'non-veg', price:130, label:'₹130', emoji:'🍗', available:true, featured:false },
+    { id:58, name:'Hot & Spicy Chicken', category:'korean_nv', sub:'non-veg', price:130, label:'₹130', emoji:'🌶️', available:true, featured:false },
+    { id:59, name:'Rameen Noodles',      category:'korean_nv', sub:'non-veg', price:120, label:'₹120', emoji:'🍜', available:true, featured:false },
+    { id:60, name:'Hot & Spicy Noodles', category:'korean_nv', sub:'non-veg', price:130, label:'₹130', emoji:'🌶️', available:true, featured:false },
+    { id:61, name:'Kimchi Noodles',      category:'korean_nv', sub:'non-veg', price:130, label:'₹130', emoji:'🥢', available:true, featured:false },
+    { id:62, name:'Non-Veg Pasta',       category:'korean_nv', sub:'non-veg', price:140, label:'₹140', emoji:'🍝', available:true, featured:false },
+    { id:63, name:'Chicken Popcorn',     category:'korean_nv', sub:'non-veg', price:130, label:'₹130', emoji:'🍗', available:true, featured:false },
+    { id:64, name:'Chicken Wings',       category:'korean_nv', sub:'non-veg', price:160, label:'₹160', emoji:'🍗', available:true, featured:true  },
+    { id:65, name:'Fried Shrimp (Prawn)',category:'korean_nv', sub:'non-veg', price:160, label:'₹160', emoji:'🦐', available:true, featured:false },
+    // SOUPS NON-VEG
+    { id:66, name:'Chicken Clear Soup',          category:'soups_nv',sub:'non-veg',price:80,label:'₹80',emoji:'🍵',available:true,featured:false },
+    { id:67, name:'Chicken Lemon Coriander Soup',category:'soups_nv',sub:'non-veg',price:70,label:'₹70',emoji:'🍋',available:true,featured:false },
+    { id:68, name:'Chicken Burnt Garlic Soup',   category:'soups_nv',sub:'non-veg',price:70,label:'₹70',emoji:'🧄',available:true,featured:false },
+    { id:69, name:'Chicken Manchow Soup',        category:'soups_nv',sub:'non-veg',price:70,label:'₹70',emoji:'🍵',available:true,featured:false },
+    { id:70, name:'Chicken Yummy Yum Hot Soup',  category:'soups_nv',sub:'non-veg',price:70,label:'₹70',emoji:'🔥',available:true,featured:true  },
+    { id:71, name:'Chicken Sweet Corn Soup',     category:'soups_nv',sub:'non-veg',price:60,label:'₹60',emoji:'🌽',available:true,featured:false },
+    { id:72, name:'Mutton Soup',                 category:'soups_nv',sub:'non-veg',price:70,label:'₹70',emoji:'🍖',available:true,featured:false },
+    // NON-VEG CHOPSY & CHOP
+    { id:73, name:'Non-Veg Chopsy',          category:'chopsy_nv',sub:'non-veg',price:140,label:'₹140',emoji:'🥢',available:true,featured:false },
+    { id:74, name:'American Non-Veg Chopsy', category:'chopsy_nv',sub:'non-veg',price:160,label:'₹160',emoji:'🥢',available:true,featured:false },
+    { id:75, name:'Egg Chop (2 pcs)',        category:'chopsy_nv',sub:'non-veg',price:60, label:'₹60', emoji:'🥚',available:true,featured:false },
+    { id:76, name:'Chicken Chop (3 pcs)',    category:'chopsy_nv',sub:'non-veg',price:70, label:'₹70', emoji:'🍗',available:true,featured:false },
+    { id:77, name:'Mutton Chop (4 pcs)',     category:'chopsy_nv',sub:'non-veg',price:60, label:'₹60', emoji:'🍖',available:true,featured:false },
+    { id:78, name:'Prawn Chop (3 pcs)',      category:'chopsy_nv',sub:'non-veg',price:80, label:'₹80', emoji:'🦐',available:true,featured:false },
+    // ICE CREAM
+    { id:79, name:'Mango Snow Ice Cream',       category:'ice_cream',sub:'dessert',price:40,label:'₹40',emoji:'🥭',available:true,featured:false },
+    { id:80, name:'Orange Snow Ice Cream',      category:'ice_cream',sub:'dessert',price:40,label:'₹40',emoji:'🍊',available:true,featured:false },
+    { id:81, name:'Pineapple Snow Ice Cream',   category:'ice_cream',sub:'dessert',price:40,label:'₹40',emoji:'🍍',available:true,featured:false },
+    { id:82, name:'Strawberry Snow Ice Cream',  category:'ice_cream',sub:'dessert',price:40,label:'₹40',emoji:'🍓',available:true,featured:false },
+    { id:83, name:'Lichi Snow Ice Cream',       category:'ice_cream',sub:'dessert',price:40,label:'₹40',emoji:'🍈',available:true,featured:false },
+    { id:84, name:'Mix Snow Ice Cream',         category:'ice_cream',sub:'dessert',price:60,label:'₹60',emoji:'🌈',available:true,featured:false },
+    { id:85, name:'Chocolate Snow Ice Cream',   category:'ice_cream',sub:'dessert',price:60,label:'₹60',emoji:'🍫',available:true,featured:true  },
+    { id:86, name:'Butter Scotch Snow Ice Cream',category:'ice_cream',sub:'dessert',price:60,label:'₹60',emoji:'🍯',available:true,featured:false },
+    { id:87, name:'Vanilla Snow Ice Cream',     category:'ice_cream',sub:'dessert',price:50,label:'₹50',emoji:'🤍',available:true,featured:false },
+    { id:88, name:'Pista Snow Ice Cream',       category:'ice_cream',sub:'dessert',price:50,label:'₹50',emoji:'💚',available:true,featured:false },
+    { id:89, name:'Cold Soup',                  category:'ice_cream',sub:'dessert',price:null,label:'Ask',emoji:'🥛',available:true,featured:false },
+  ];
+}

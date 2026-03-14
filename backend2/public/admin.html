@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Yummy Yum Hot</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --fire:#FF4500;--gold:#FFD700;--green:#25D366;
+  --dark:#0A0300;--card:#141414;--surface:#1E1E1E;
+  --border:#2A2A2A;--red:#E74C3C;--blue:#3498DB;
+  --yellow:#F39C12;--text:#E0E0E0;--muted:#888;
+}
+body{font-family:system-ui,sans-serif;background:#0F0F0F;color:var(--text);min-height:100vh}
+
+/* LOGIN */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 50% 50%,#1A0500,#050208)}
+.login-box{background:var(--card);border:1px solid #2A2A2A;border-radius:16px;padding:2.5rem;width:100%;max-width:380px;text-align:center}
+.login-logo{font-size:3rem;margin-bottom:0.5rem}
+.login-box h1{font-size:1.5rem;background:linear-gradient(135deg,var(--gold),var(--fire));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.25rem}
+.login-box p{color:var(--muted);font-size:0.82rem;margin-bottom:2rem}
+.inp{width:100%;background:#111;border:1px solid var(--border);color:var(--text);padding:12px 16px;border-radius:8px;font-size:0.9rem;outline:none;margin-bottom:1rem;transition:border-color 0.2s}
+.inp:focus{border-color:var(--fire)}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--fire),#FF6B00);color:#fff;border:none;padding:13px;border-radius:8px;font-size:0.9rem;font-weight:700;cursor:pointer;transition:opacity 0.2s}
+.login-btn:hover{opacity:0.88}
+.err{color:var(--red);font-size:0.82rem;margin-top:0.75rem;display:none;padding:8px;background:rgba(231,76,60,0.1);border-radius:6px}
+
+/* APP */
+#app{display:none;min-height:100vh}
+.layout{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.sb-brand{padding:1.25rem;border-bottom:1px solid var(--border)}
+.sb-brand h2{font-size:1.1rem;background:linear-gradient(135deg,var(--gold),var(--fire));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+.sb-brand p{color:var(--muted);font-size:0.72rem;margin-top:3px}
+.sb-nav{padding:0.75rem 0;flex:1}
+.ni{display:flex;align-items:center;gap:10px;padding:11px 1.25rem;color:var(--muted);cursor:pointer;font-size:0.84rem;transition:all 0.2s;border-left:3px solid transparent}
+.ni:hover{color:var(--text);background:rgba(255,255,255,0.04)}
+.ni.on{color:var(--fire);border-left-color:var(--fire);background:rgba(255,69,0,0.08);font-weight:600}
+.sb-foot{padding:1rem 1.25rem;border-top:1px solid var(--border)}
+.sb-user{font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem}
+.sb-user strong{display:block;color:var(--text);font-size:0.85rem;margin-bottom:2px}
+.out-btn{width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px;border-radius:6px;cursor:pointer;font-size:0.75rem;transition:all 0.2s}
+.out-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* MAIN */
+.main{overflow-y:auto;background:#0F0F0F}
+.page{display:none;padding:2rem}
+.page.on{display:block}
+.ph{margin-bottom:2rem}
+.ph h1{font-size:1.5rem;font-weight:700}
+.ph p{color:var(--muted);font-size:0.82rem;margin-top:4px}
+
+/* STATS GRID */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:var(--fire)}
+.sc.g::before{background:var(--green)}
+.sc.b::before{background:var(--blue)}
+.sc.y::before{background:var(--yellow)}
+.sc-l{font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
+.sc-v{font-size:1.9rem;font-weight:700;line-height:1}
+.sc-s{font-size:0.72rem;color:var(--muted);margin-top:4px}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem}
+.card-title{font-size:0.9rem;font-weight:600;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between}
+
+/* TABLE */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:0.83rem}
+th{text-align:left;padding:10px 12px;color:var(--muted);font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:0.67rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+.badge.pending  {background:rgba(243,156,18,0.15);color:var(--yellow)}
+.badge.confirmed{background:rgba(52,152,219,0.15);color:var(--blue)}
+.badge.preparing{background:rgba(255,69,0,0.15);  color:var(--fire)}
+.badge.ready    {background:rgba(37,211,102,0.2);  color:var(--green)}
+.badge.delivered{background:rgba(150,150,150,0.1); color:#aaa}
+.badge.cancelled{background:rgba(231,76,60,0.15);  color:var(--red)}
+.ssel{background:#111;border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:6px;font-size:0.77rem;cursor:pointer;outline:none}
+
+/* FILTER BAR */
+.fb{display:flex;gap:0.75rem;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap}
+.fsel{background:#111;border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:8px;font-size:0.82rem;outline:none;cursor:pointer}
+.rbtn{background:rgba(255,69,0,0.1);border:1px solid rgba(255,69,0,0.3);color:var(--fire);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.82rem;transition:all 0.2s}
+.rbtn:hover{background:rgba(255,69,0,0.2)}
+.cnt{font-size:0.78rem;color:var(--muted);margin-left:auto}
+
+/* MENU GRID */
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:0.75rem}
+.mc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.9rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;transition:border-color 0.2s}
+.mc:hover{border-color:rgba(255,165,0,0.3)}
+.mc.off{opacity:0.4}
+.ml{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.me{font-size:1.3rem;flex-shrink:0}
+.mn{font-size:0.83rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mcat{font-size:0.68rem;color:var(--muted);margin-top:1px}
+.mp{font-size:0.95rem;font-weight:700;color:var(--gold);white-space:nowrap}
+.tb{background:none;border:1px solid var(--border);color:var(--muted);padding:4px 12px;border-radius:50px;cursor:pointer;font-size:0.7rem;transition:all 0.2s;white-space:nowrap}
+.tb:hover{border-color:var(--green);color:var(--green)}
+.tb.toff:hover{border-color:var(--red);color:var(--red)}
+
+/* ADD FORM */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.fgrp{display:flex;flex-direction:column;gap:5px}
+.fgrp label{font-size:0.72rem;color:var(--muted)}
+.fi{background:#111;border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:0.84rem;outline:none;transition:border-color 0.2s;width:100%}
+.fi:focus{border-color:var(--fire)}
+.fs{background:#111;border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:0.84rem;outline:none;cursor:pointer;width:100%}
+.abtn{background:linear-gradient(135deg,var(--fire),#FF6B00);color:#fff;border:none;padding:11px 28px;border-radius:8px;font-size:0.84rem;font-weight:600;cursor:pointer;margin-top:1rem;transition:opacity 0.2s}
+.abtn:hover{opacity:0.88}
+
+/* STATS BARS */
+.bar-row{margin-bottom:10px}
+.bar-meta{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:3px}
+.bar-bg{background:#1E1E1E;border-radius:4px;height:6px}
+.bar-fill{height:6px;border-radius:4px;background:linear-gradient(90deg,var(--fire),var(--gold));transition:width 0.6s}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;background:var(--green);color:#fff;padding:12px 20px;border-radius:10px;font-size:0.84rem;font-weight:600;transform:translateY(60px);opacity:0;transition:all 0.3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{background:var(--red)}
+
+@media(max-width:768px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .sg{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">🔥</div>
+    <h1>Yummy Yum Hot</h1>
+    <p>Admin Panel · Ghatikia Food Court, Bhubaneswar</p>
+    <input class="inp" id="uname" type="text"     placeholder="Username" />
+    <input class="inp" id="upass" type="password" placeholder="Password" />
+    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="err" id="loginErr"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- APP -->
+<div id="app">
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-brand">
+        <h2>🔥 Yummy Yum Hot</h2>
+        <p>Admin Panel</p>
+      </div>
+      <nav class="sb-nav">
+        <div class="ni on" onclick="goto('dashboard')">📊 Dashboard</div>
+        <div class="ni"    onclick="goto('orders')">📋 Orders</div>
+        <div class="ni"    onclick="goto('menu')">🍜 Menu Manager</div>
+        <div class="ni"    onclick="goto('stats')">📈 Revenue Stats</div>
+      </nav>
+      <div class="sb-foot">
+        <div class="sb-user">
+          <strong id="adminName">admin</strong>
+          Administrator
+        </div>
+        <button class="out-btn" onclick="doLogout()">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- DASHBOARD -->
+      <div class="page on" id="page-dashboard">
+        <div class="ph">
+          <h1>Dashboard 📊</h1>
+          <p id="dashDate">Loading...</p>
+        </div>
+        <div class="sg">
+          <div class="sc">  <div class="sc-l">Today Orders</div><div class="sc-v" id="s-to">—</div><div class="sc-s">Total placed today</div></div>
+          <div class="sc g"><div class="sc-l">Today Revenue</div><div class="sc-v" id="s-tr">—</div><div class="sc-s">Excl. cancelled</div></div>
+          <div class="sc y"><div class="sc-l">Pending</div>      <div class="sc-v" id="s-p">—</div> <div class="sc-s">Needs confirmation</div></div>
+          <div class="sc b"><div class="sc-l">Month Revenue</div><div class="sc-v" id="s-mr">—</div><div class="sc-s">This month total</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Recent Orders <button class="rbtn" onclick="loadDash()">🔄 Refresh</button></div>
+          <div class="tw">
+            <table>
+              <thead><tr><th>Order #</th><th>Customer</th><th>Amount</th><th>Status</th><th>Time</th></tr></thead>
+              <tbody id="recentTb"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="page" id="page-orders">
+        <div class="ph"><h1>All Orders 📋</h1><p>View and update every order</p></div>
+        <div class="fb">
+          <select class="fsel" id="stFilter" onchange="loadOrders()">
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="preparing">Preparing</option>
+            <option value="ready">Ready</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <select class="fsel" id="dtFilter" onchange="loadOrders()">
+            <option value="today">Today</option>
+            <option value="">All Time</option>
+          </select>
+          <button class="rbtn" onclick="loadOrders()">🔄 Refresh</button>
+          <span class="cnt" id="oCnt"></span>
+        </div>
+        <div class="card">
+          <div class="tw">
+            <table>
+              <thead><tr><th>Order #</th><th>Customer</th><th>Items</th><th>Total</th><th>Type</th><th>Status</th><th>Time</th><th>WA</th></tr></thead>
+              <tbody id="ordersTb"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MENU MANAGER -->
+      <div class="page" id="page-menu">
+        <div class="ph"><h1>Menu Manager 🍜</h1><p>Add items, toggle availability</p></div>
+
+        <div class="card">
+          <div class="card-title">➕ Add New Menu Item</div>
+          <div class="fg">
+            <div class="fgrp"><label>Item Name *</label><input class="fi" id="nName" placeholder="e.g. Spicy Tofu" /></div>
+            <div class="fgrp"><label>Price (₹) — blank = "Ask"</label><input class="fi" id="nPrice" type="number" placeholder="120" /></div>
+            <div class="fgrp"><label>Category *</label>
+              <select class="fs" id="nCat">
+                <option value="starters">Starters</option>
+                <option value="chopsy">Chopsy (Veg)</option>
+                <option value="chopsy_nv">Chopsy (Non-Veg)</option>
+                <option value="korean_veg">Korean Noodles (Veg)</option>
+                <option value="korean_nv">Korean Noodles (Non-Veg)</option>
+                <option value="soups_veg">Soups (Veg)</option>
+                <option value="soups_nv">Soups (Non-Veg)</option>
+                <option value="bread">Bread</option>
+                <option value="chicken">Chicken</option>
+                <option value="egg">Egg</option>
+                <option value="prawn">Prawn</option>
+                <option value="fish">Fish</option>
+                <option value="ice_cream">Ice Cream</option>
+              </select>
+            </div>
+            <div class="fgrp"><label>Type</label>
+              <select class="fs" id="nSub">
+                <option value="veg">Vegetarian</option>
+                <option value="non-veg">Non-Vegetarian</option>
+                <option value="dessert">Dessert</option>
+              </select>
+            </div>
+            <div class="fgrp"><label>Emoji</label><input class="fi" id="nEmoji" placeholder="🍜" /></div>
+            <div class="fgrp"><label>Featured?</label>
+              <select class="fs" id="nFeat">
+                <option value="false">No</option>
+                <option value="true">Yes — show in specials</option>
+              </select>
+            </div>
+          </div>
+          <button class="abtn" onclick="addItem()">+ Add to Menu</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            All Menu Items
+            <select class="fsel" id="mCatFilter" onchange="loadMenu()">
+              <option value="">All Categories</option>
+              <option value="starters">Starters</option>
+              <option value="chopsy">Chopsy (Veg)</option>
+              <option value="chopsy_nv">Chopsy (Non-Veg)</option>
+              <option value="korean_veg">Korean (Veg)</option>
+              <option value="korean_nv">Korean (Non-Veg)</option>
+              <option value="soups_veg">Soups (Veg)</option>
+              <option value="soups_nv">Soups (Non-Veg)</option>
+              <option value="chicken">Chicken</option>
+              <option value="egg">Egg</option>
+              <option value="prawn">Prawn</option>
+              <option value="fish">Fish</option>
+              <option value="ice_cream">Ice Cream</option>
+            </select>
+          </div>
+          <div class="mg" id="menuGrid">Loading...</div>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="page" id="page-stats">
+        <div class="ph"><h1>Revenue Stats 📈</h1><p>Performance overview</p></div>
+        <div class="sg">
+          <div class="sc">  <div class="sc-l">This Week Orders</div>  <div class="sc-v" id="st-wo">—</div></div>
+          <div class="sc g"><div class="sc-l">This Week Revenue</div> <div class="sc-v" id="st-wr">—</div></div>
+          <div class="sc b"><div class="sc-l">This Month Orders</div> <div class="sc-v" id="st-mo">—</div></div>
+          <div class="sc y"><div class="sc-l">This Month Revenue</div><div class="sc-v" id="st-mr">—</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div class="card">
+            <div class="card-title">🏆 Top Ordered Items</div>
+            <div id="topItems">Loading...</div>
+          </div>
+          <div class="card">
+            <div class="card-title">📅 Last 7 Days Revenue</div>
+            <div id="revChart">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+// ── CONFIG — change this to your deployed backend URL ────────
+const API = window.location.origin + '/api';
+let TOKEN = localStorage.getItem('yyh_token');
+
+if (TOKEN) initApp();
+
+// ── LOGIN ────────────────────────────────────────────────────
+async function doLogin() {
+  const username = document.getElementById('uname').value.trim();
+  const password = document.getElementById('upass').value;
+  const errEl    = document.getElementById('loginErr');
+  errEl.style.display = 'none';
+
+  if (!username || !password) {
+    errEl.textContent = 'Please enter username and password.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  try {
+    const res  = await fetch(`${API}/admin/login`, {
+      method  : 'POST',
+      headers : { 'Content-Type': 'application/json' },
+      body    : JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      errEl.textContent = data.error || 'Login failed.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    TOKEN = data.token;
+    localStorage.setItem('yyh_token', TOKEN);
+    document.getElementById('adminName').textContent = data.admin.username;
+    initApp();
+
+  } catch(e) {
+    errEl.textContent = '❌ Cannot connect to server. Is it running?';
+    errEl.style.display = 'block';
+  }
+}
+
+function doLogout() {
+  localStorage.removeItem('yyh_token');
+  TOKEN = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('upass').value = '';
+}
+
+function initApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('dashDate').textContent =
+    '🗓️  ' + new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  loadDash();
+  loadMenu();
+}
+
+// ── API HELPER ───────────────────────────────────────────────
+async function api(path, opts={}) {
+  try {
+    const res = await fetch(`${API}${path}`, {
+      ...opts,
+      headers: {
+        'Content-Type'  : 'application/json',
+        'Authorization' : `Bearer ${TOKEN}`,
+        ...(opts.headers || {})
+      }
+    });
+    if (res.status === 401) { doLogout(); return null; }
+    return res.json();
+  } catch(e) {
+    toast('⚠️ Server not reachable', true);
+    return null;
+  }
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────
+function goto(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('on'));
+  document.getElementById('page-' + name).classList.add('on');
+  event.currentTarget.classList.add('on');
+  if (name === 'orders') loadOrders();
+  if (name === 'stats')  loadStats();
+  if (name === 'menu')   loadMenu();
+}
+
+// ── DASHBOARD ────────────────────────────────────────────────
+async function loadDash() {
+  const d = await api('/stats/dashboard');
+  if (!d) return;
+  document.getElementById('s-to').textContent = d.today.total_orders;
+  document.getElementById('s-tr').textContent = '₹' + Math.round(d.today.total_revenue);
+  document.getElementById('s-p').textContent  = d.today.pending;
+  document.getElementById('s-mr').textContent = '₹' + Math.round(d.month.revenue);
+
+  const tb = document.getElementById('recentTb');
+  tb.innerHTML = d.recent_orders.length === 0
+    ? '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem">No orders yet</td></tr>'
+    : d.recent_orders.map(o => `
+      <tr>
+        <td style="font-family:monospace;font-size:0.75rem;color:#aaa">${o.order_number}</td>
+        <td>${o.customer_name}</td>
+        <td style="font-weight:600">₹${o.total_amount}</td>
+        <td><span class="badge ${o.status}">${o.status}</span></td>
+        <td style="color:var(--muted);font-size:0.76rem">${fmt(o.created_at)}</td>
+      </tr>`).join('');
+}
+
+// ── ORDERS ───────────────────────────────────────────────────
+async function loadOrders() {
+  const status = document.getElementById('stFilter').value;
+  const date   = document.getElementById('dtFilter').value;
+  const d      = await api(`/orders?status=${status}&date=${date}`);
+  if (!d) return;
+
+  document.getElementById('oCnt').textContent = `${d.total} orders`;
+  const tb = document.getElementById('ordersTb');
+
+  if (!d.orders.length) {
+    tb.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:2rem">No orders found</td></tr>';
+    return;
+  }
+
+  tb.innerHTML = d.orders.map(o => {
+    const itemStr = o.items.map(i => `${i.emoji||'•'} ${i.name} x${i.quantity}`).join(', ');
+    const waText  = encodeURIComponent(`Hi ${o.customer_name}! Your order #${o.order_number} at Yummy Yum Hot is confirmed ✅`);
+    return `<tr>
+      <td style="font-family:monospace;font-size:0.73rem;color:#aaa">${o.order_number}</td>
+      <td>
+        <div style="font-size:0.84rem">${o.customer_name}</div>
+        <div style="font-size:0.73rem;color:var(--muted)">${o.customer_phone}</div>
+      </td>
+      <td style="font-size:0.76rem;color:var(--muted);max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${itemStr}</td>
+      <td style="font-weight:700">₹${o.total_amount}</td>
+      <td style="font-size:0.78rem">${o.order_type}</td>
+      <td>
+        <select class="ssel" onchange="updateStatus(${o.id},this.value)">
+          ${['pending','confirmed','preparing','ready','delivered','cancelled'].map(s =>
+            `<option value="${s}"${o.status===s?' selected':''}>${s}</option>`
+          ).join('')}
+        </select>
+      </td>
+      <td style="color:var(--muted);font-size:0.74rem">${fmt(o.created_at)}</td>
+      <td>
+        <a href="https://wa.me/${o.customer_phone}?text=${waText}" target="_blank"
+           title="Message customer on WhatsApp" style="color:var(--green);font-size:1.1rem;text-decoration:none">📲</a>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function updateStatus(id, status) {
+  const d = await api(`/orders/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ status })
+  });
+  if (d?.success) toast(`✅ Order → "${status}"`);
+  else toast('❌ Update failed', true);
+}
+
+// ── MENU ─────────────────────────────────────────────────────
+async function loadMenu() {
+  const cat = document.getElementById('mCatFilter')?.value || '';
+  const d   = await api(`/menu/all${cat ? '?category=' + cat : ''}`);
+  if (!d) return;
+
+  const grid = document.getElementById('menuGrid');
+  if (!d.items.length) { grid.innerHTML = '<p style="color:var(--muted)">No items</p>'; return; }
+
+  grid.innerHTML = d.items.map(item => `
+    <div class="mc ${item.available ? '' : 'off'}" id="mc-${item.id}">
+      <div class="ml">
+        <span class="me">${item.emoji || '🍽️'}</span>
+        <div>
+          <div class="mn">${item.name}</div>
+          <div class="mcat">${item.category} · ${item.sub}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <span class="mp">${item.label}</span>
+        <button class="tb ${item.available ? '' : 'toff'}"
+                onclick="toggleItem(${item.id},this)">
+          ${item.available ? '✅ On' : '❌ Off'}
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+async function toggleItem(id, btn) {
+  const d = await api(`/menu/${id}/toggle`, { method: 'PUT' });
+  if (!d?.success) { toast('Failed', true); return; }
+  const card = document.getElementById('mc-' + id);
+  const on   = d.is_available;
+  card.classList.toggle('off', !on);
+  btn.textContent = on ? '✅ On' : '❌ Off';
+  btn.classList.toggle('toff', !on);
+  toast(d.message);
+}
+
+async function addItem() {
+  const name  = document.getElementById('nName').value.trim();
+  const price = document.getElementById('nPrice').value;
+  const cat   = document.getElementById('nCat').value;
+  const sub   = document.getElementById('nSub').value;
+  const emoji = document.getElementById('nEmoji').value.trim() || '🍽️';
+  const feat  = document.getElementById('nFeat').value;
+
+  if (!name) { toast('❌ Please enter item name', true); return; }
+
+  const d = await api('/menu', {
+    method : 'POST',
+    body   : JSON.stringify({ name, category: cat, sub, price: price || null, emoji, featured: feat === 'true' })
+  });
+
+  if (d?.success) {
+    toast(`✅ "${name}" added to menu!`);
+    document.getElementById('nName').value  = '';
+    document.getElementById('nPrice').value = '';
+    document.getElementById('nEmoji').value = '';
+    loadMenu();
+  } else {
+    toast(d?.error || '❌ Failed', true);
+  }
+}
+
+// ── STATS ─────────────────────────────────────────────────────
+async function loadStats() {
+  const [dash, top, rev] = await Promise.all([
+    api('/stats/dashboard'),
+    api('/stats/top-items'),
+    api('/stats/revenue')
+  ]);
+
+  if (dash) {
+    document.getElementById('st-wo').textContent = dash.week.orders;
+    document.getElementById('st-wr').textContent = '₹' + Math.round(dash.week.revenue);
+    document.getElementById('st-mo').textContent = dash.month.orders;
+    document.getElementById('st-mr').textContent = '₹' + Math.round(dash.month.revenue);
+  }
+
+  if (top) {
+    document.getElementById('topItems').innerHTML = top.top_items.length
+      ? top.top_items.map((item, i) => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:0.83rem">${i + 1}. ${item.name}</span>
+            <span style="background:rgba(255,69,0,0.15);color:var(--fire);padding:2px 10px;border-radius:50px;font-size:0.72rem;font-weight:600">${item.count} orders</span>
+          </div>`).join('')
+      : '<p style="color:var(--muted);font-size:0.83rem">No completed orders yet</p>';
+  }
+
+  if (rev) {
+    const max = Math.max(...rev.data.map(r => r.revenue), 1);
+    document.getElementById('revChart').innerHTML = rev.data.map(r => `
+      <div class="bar-row">
+        <div class="bar-meta"><span>${r.date}</span><span>₹${Math.round(r.revenue)} · ${r.orders} orders</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(r.revenue / max * 100)}%"></div></div>
+      </div>`).join('');
+  }
+}
+
+// ── HELPERS ──────────────────────────────────────────────────
+function fmt(dt) {
+  if (!dt) return '—';
+  return new Date(dt).toLocaleString('en-IN', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+
+function toast(msg, isErr = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast show' + (isErr ? ' err' : '');
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// Enter key on password field
+document.getElementById('upass')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>
